@@ -1,8 +1,7 @@
+from flask import Flask, render_template
 import random
-import time
-from colorama import init, Fore, Style
 
-init(autoreset=True)
+app = Flask(__name__)
 
 subjects = [
     "Rebel Kid", "Wizard Lizard", "Bulbasaur", "Triceratops", "Bumblebee",
@@ -26,22 +25,12 @@ def generate_headline():
     subject = random.choice(subjects)
     action = random.choice(actions)
     place = random.choice(places)
+    return f"🚨 BREAKING NEWS!!! {subject} {action} in {place} 🚨"
 
-    headline = f"{Fore.RED + Style.BRIGHT}\n🚨 BREAKING NEWS!!! {subject} {action} in {place} 🚨"
-    return headline
-
-def main():
-    print(f"{Fore.CYAN + Style.BRIGHT}📰 Welcome to the Fake News Headline Generator!\n")
-    while True:
-        time.sleep(0.5)
-        print(generate_headline())
-
-        user_input = input(f"{Fore.YELLOW}\nWant another headline? (yes/no): ").strip().lower()
-        if user_input == "no":
-            break
-        elif user_input != "yes":
-            print(f"{Fore.RED}Invalid input. Please type 'yes' or 'no'.")
-    print(f"\n{Fore.GREEN}Thanks for using the Fake News Headline Generator. Have a funny day! 😄")
+@app.route("/")
+def index():
+    headline = generate_headline()
+    return render_template("index.html", headline=headline)
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)
